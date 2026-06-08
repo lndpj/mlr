@@ -7,10 +7,13 @@
 #include <array>
 
 #ifdef _MSC_VER
-#define INLINE __force_inline __flatten __declspec(nothrow)
+#define INLINE __force_inline __flatten __declspec(nothrow) inline
+#define CONST __declspec(noalias)
 #else
 #define INLINE __attribute__((always_inline,flatten,nothrow)) inline
+#define CONST __attribute__((const))
 #endif
+
 
 template<typename T>
 concept scalar = std::integral<T> || std::floating_point<T>;

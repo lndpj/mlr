@@ -3,7 +3,20 @@ C++ SIMD OpenMP linear algebra math library
 
 ## About
 
-mlr implements aligned array [arr : std::array<T,N>][3] based vector [vec::type<T,N,A>][4] type for N-dimensional linear algebra math and Quake C++ vec_t type interface.
+mlr implements aligned array based [vec<<T,N>] type for N-dimensional linear algebra math.
+
+supported scalar types:
+
+- f32<N>
+- f64<N>
+-  i8<N>
+-  u8<N>
+- i16<N>
+- u16<N>
+- i32<N>
+- u32<N>
+- i64<N>
+- u64<N>
 
 ## Dependencies
 

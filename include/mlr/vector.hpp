@@ -148,6 +148,8 @@ template<size_t N=1>
 using f32 = vec<N,float>;
 template<size_t N=1>
 using f64 = vec<N,double>;
+template<size_t N=1>
+using f128 = vec<N,long double>;
 
 template<size_t N=1>
 using b8  = vec<N,bool>;

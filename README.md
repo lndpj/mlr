@@ -51,7 +51,19 @@ mlr implements aligned array based `vec<N,T>` type for N-dimensional linear alge
 cmake . --install-prefix=/usr
 make install
 ```
+## Usage
 
+```cpp
+#include <mlr/vector.hpp>
+
+int main(int argc, char** argv)
+{
+    f32<3> a = {1,2,3};
+    f32<4> b = {4,5,6,7};
+    f32<3> c = 3.0f / (a + c) - 4.0f;
+    printf("[%f %f %f]\n",c[0],c[1],c[2]);
+}
+```
 ## Links
 
 - [SYCL Overview][3]

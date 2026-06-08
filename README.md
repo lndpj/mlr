@@ -9,7 +9,6 @@ mlr implements aligned array based `vec<N,T>` type for N-dimensional linear alge
 - ` f32<N>`
 - ` f64<N>`
 - `f128<N>`
-
 **integer**
 - ` i8<N>`
 - ` u8<N>`
@@ -19,13 +18,20 @@ mlr implements aligned array based `vec<N,T>` type for N-dimensional linear alge
 - `u32<N>`
 - `i64<N>`
 - `u64<N>`
-
 **boolean**
 - ` b8<N>`
 - `b32<N>`
 **character**
 - ` c8<N>`
 - `c32<N>`
+
+
+**operations**
+- [x] dot
+- [x] cross3
+- [x] perm
+- [ ] hat
+- [ ] vee
 
 ## Dependencies
 

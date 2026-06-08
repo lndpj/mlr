@@ -32,12 +32,12 @@ mlr implements aligned array based `vec<N,T>` type for N-dimensional linear alge
 - [x] dot
 - [x] cross3
 - [x] perm
-- [ ] levi-civita
+- [ ] det
 - [ ] hat
 - [ ] vee
+- [ ] levi-civita
 - [ ] hodge
 - [ ] laplacian
-- [ ] det
 
 ## Dependencies
 

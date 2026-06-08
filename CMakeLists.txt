@@ -19,6 +19,11 @@ if( CMAKE_BUILD_TYPE EQUAL Debug )
 	add_compile_options(-g)
 endif()
 
+include_directories( mlr INTERFACE
+        PUBLIC_HEADER $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
 if( NOT MSVC )
 	if( NOT CMAKE_CROSSCOMPILING )
 		add_compile_options(-march=native)
@@ -45,10 +50,6 @@ if( NOT MSVC )
 	add_link_options(-Wl,-s)
 endif()
 
-include_directories( mlr INTERFACE
-        PUBLIC_HEADER $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-)
 add_executable( vector examples/vector.cpp )
 add_library(mlr INTERFACE)
 target_include_directories( mlr INTERFACE
@@ -57,23 +58,4 @@ target_include_directories( mlr INTERFACE
 )
 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/mlr DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT headers)
-
-#add_executable( example examples/example.c )
-#target_link_libraries( example alcvx )
-
-
-  # Genuine BZip2 does not provide bzip2.pc, but some platforms have
-  # it.  For better dependency in freetype2.pc, bzip2.pc is searched
-  # regardless of the availability of libbz2. If bzip2.pc is found,
-  # Requires.private is used instead of Libs.private.
-
-
-  #add_library(alcvx-objlib OBJECT alcvx.c)
-  #add_library(alcvx-shared SHARED)
-  #set_target_properties(alcvx-shared PROPERTIES OUTPUT_NAME alcvx)
-  #target_link_libraries(alcvx-shared PUBLIC alcvx-objlib)
-
-  #add_library(alcvx-static STATIC)
-  #set_target_properties(alcvx-static PROPERTIES OUTPUT_NAME alcvx)
-  #target_link_libraries(alcvx-static PUBLIC alcvx-objlib)
 

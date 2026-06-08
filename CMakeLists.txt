@@ -26,30 +26,37 @@ if( NOT MSVC )
 			add_compile_options(-mfpmath=sse)
 		endif()
 	endif()
-add_compile_options(-O3)
-add_compile_options(-fopenmp-simd)
-add_compile_options(-ftree-vectorize)
-add_compile_options(-Wno-gnu-alignof-expression)
-add_compile_options(-D_FILE_OFFSET_BITS=64)
-add_compile_options(-fdata-sections)
-add_compile_options(-fpermissive)
-add_compile_options(-ffunction-sections)
-add_compile_options(-Wno-array-bounds)
-add_compile_options(-Wno-unused-parameter)
-add_compile_options(-Wno-pedantic)
-add_compile_options(-Wno-narrowing)
-add_link_options(-Wl,--gc-sections)
-add_link_options(-Wl,--print-gc-sections)
-add_link_options(-Wl,-s)
+	if( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
+		add_compile_options(-Wno-gnu-alignof-expression)
+	endif()
+	add_compile_options(-O3)
+	add_compile_options(-fopenmp-simd)
+	add_compile_options(-ftree-vectorize)
+	add_compile_options(-D_FILE_OFFSET_BITS=64)
+	add_compile_options(-fdata-sections)
+	add_compile_options(-fpermissive)
+	add_compile_options(-ffunction-sections)
+	add_compile_options(-Wno-array-bounds)
+	add_compile_options(-Wno-unused-parameter)
+	add_compile_options(-Wno-pedantic)
+	add_compile_options(-Wno-narrowing)
+	add_link_options(-Wl,--gc-sections)
+	add_link_options(-Wl,--print-gc-sections)
+	add_link_options(-Wl,-s)
 endif()
 
-add_executable( vector examples/vector.cpp inc/mlr/vector.hpp )
-include_directories( vector INTERFACE
-        PUBLIC_HEADER $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/inc>
+include_directories( mlr INTERFACE
+        PUBLIC_HEADER $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+add_executable( vector examples/vector.cpp )
+add_library(mlr INTERFACE)
+target_include_directories( mlr INTERFACE
+        PUBLIC_HEADER $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/inc/mlr DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT headers)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/mlr DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT headers)
 
 #add_executable( example examples/example.c )
 #target_link_libraries( example alcvx )

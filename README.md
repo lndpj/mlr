@@ -3,7 +3,7 @@ C++ SIMD OpenMP linear algebra math library
 
 ## About
 
-mlr implements aligned array based [vec<<T,N>] type for N-dimensional linear algebra math.
+mlr implements aligned array based `vec<N,T>` type for N-dimensional linear algebra math.
 
 **floating-point**
 

@@ -22,7 +22,7 @@ mlr implements aligned array based `vec<N,T>` type for N-dimensional linear alge
 
 **boolean**
 - ` b8<N>`
-
+- `b32<N>`
 **character**
 - ` c8<N>`
 - `c32<N>`

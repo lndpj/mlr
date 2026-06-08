@@ -154,6 +154,10 @@ using f128 = vec<N,long double>;
 template<size_t N=1>
 using b8  = vec<N,bool>;
 
+enum class boolean_enum { FALSE = (const int)false, TRUE = (const int)true };
+template<size_t N=1>
+using b32 = vec<N,enum boolean_enum>;
+
 template<size_t N=1>
 using c8  = vec<N,char>;
 template<size_t N=1>

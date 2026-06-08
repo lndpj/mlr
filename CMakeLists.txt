@@ -43,13 +43,13 @@ add_link_options(-Wl,--print-gc-sections)
 add_link_options(-Wl,-s)
 endif()
 
-add_executable( vector vector.cpp )
-target_include_directories( vector INTERFACE
+add_executable( vector examples/vector.cpp inc/mlr/vector.hpp )
+include_directories( vector INTERFACE
         PUBLIC_HEADER $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/inc>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-install(FILES ${PROJECT_SOURCE_DIR}/inc/* DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT headers)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/inc/mlr DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT headers)
 
 #add_executable( example examples/example.c )
 #target_link_libraries( example alcvx )

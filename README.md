@@ -7,16 +7,16 @@ mlr implements aligned array based [vec<<T,N>] type for N-dimensional linear alg
 
 supported scalar types:
 
-- f32<N>
-- f64<N>
--  i8<N>
--  u8<N>
-- i16<N>
-- u16<N>
-- i32<N>
-- u32<N>
-- i64<N>
-- u64<N>
+- `f32<N>`
+- `f64<N>`
+- ` i8<N>`
+- ` u8<N>`
+- `i16<N>`
+- `u16<N>`
+- `i32<N>`
+- `u32<N>`
+- `i64<N>`
+- `u64<N>`
 
 ## Dependencies
 

@@ -21,6 +21,12 @@ mlr implements aligned array based `vec<N,T>` type for N-dimensional linear alge
 - [x] `b32<N>`
 - [x] ` c8<N>`
 - [x] `c32<N>`
+- [ ] `mat<N,M>`
+- [ ] `bivec<N>`
+- [ ] `mvec<N>`
+- [ ] `quat<N>`
+- [ ] `versor<N>`
+- [ ] `motor<N>`
 
 **operations**
 - [x] dot

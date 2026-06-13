@@ -41,7 +41,7 @@ struct ops
 	}
 
 	template<typename T_RHS>
-	INLINE T& operator+=(const T_RHS& other) requires(other.size() > 0)
+	INLINE T& operator+=(const T_RHS& other) requires(!scalar<T_RHS>)
 	{
 		T& dst = (*reinterpret_cast<T*>(this));
 		#pragma omp simd
@@ -50,7 +50,16 @@ struct ops
 		return dst;
 	}
 	template<typename T_RHS>
-	INLINE T& operator-=(const T_RHS& other) requires(other.size() > 0)
+	INLINE T& operator+=(const T_RHS& other) requires(scalar<T_RHS>)
+	{
+		T& dst = (*reinterpret_cast<T*>(this));
+		#pragma omp simd
+		for(size_t i = 0; i < dst.size(); i++)
+			dst[i] += other;
+		return dst;
+	}
+	template<typename T_RHS>
+	INLINE T& operator-=(const T_RHS& other) requires(!scalar<T_RHS>)
 	{
 		T& dst = (*reinterpret_cast<T*>(this));
 		#pragma omp simd
@@ -59,7 +68,16 @@ struct ops
 		return dst;
 	}
 	template<typename T_RHS>
-	INLINE T& operator*=(const T_RHS& other) requires(other.size() > 0)
+	INLINE T& operator-=(const T_RHS& other) requires(scalar<T_RHS>)
+	{
+		T& dst = (*reinterpret_cast<T*>(this));
+		#pragma omp simd
+		for(size_t i = 0; i < dst.size(); i++)
+			dst[i] -= other;
+		return dst;
+	}
+	template<typename T_RHS>
+	INLINE T& operator*=(const T_RHS& other) requires(!scalar<T_RHS>)
 	{
 		T& dst = (*reinterpret_cast<T*>(this));
 		#pragma omp simd
@@ -68,12 +86,30 @@ struct ops
 		return dst;
 	}
 	template<typename T_RHS>
-	INLINE T& operator/=(const T_RHS& other) requires(other.size() > 0)
+	INLINE T& operator*=(const T_RHS& other) requires(scalar<T_RHS>)
+	{
+		T& dst = (*reinterpret_cast<T*>(this));
+		#pragma omp simd
+		for(size_t i = 0; i < dst.size(); i++)
+			dst[i] *= other;
+		return dst;
+	}
+	template<typename T_RHS>
+	INLINE T& operator/=(const T_RHS& other) requires(!scalar<T_RHS>)
 	{
 		T& dst = (*reinterpret_cast<T*>(this));
 		#pragma omp simd
 		for(size_t i = 0; i < std::min(dst.size(),other.size()); i++)
 			dst[i] /= other[i];
+		return dst;
+	}
+	template<typename T_RHS>
+	INLINE T& operator/=(const T_RHS& other) requires(scalar<T_RHS>)
+	{
+		T& dst = (*reinterpret_cast<T*>(this));
+		#pragma omp simd
+		for(size_t i = 0; i < dst.size(); i++)
+			dst[i] /= other;
 		return dst;
 	}
 	template<typename T_LHS>
@@ -109,6 +145,35 @@ struct alignas((N == N_POW2 ? N : 1) * alignof(T)) vec : std::array<T,N>, ops<ve
 	}
 	template<typename... I>
 	constexpr INLINE vec<sizeof...(I),T> perm(const I... args) const { return vec<sizeof...(I),T>{ (*this)[args % N]... }; }
+
+	template<typename T_DST = double>
+	INLINE T_DST norm_squared(T_DST dst = (T_DST)0)
+	{
+		#pragma omp simd reduction(+:dst)
+		for(size_t i = 0; i < N; i++)
+			dst += (*this)[i] * (*this)[i];
+		return dst;
+	}
+
+	template<typename T_DST = double>
+	constexpr INLINE T_DST norm(T_DST dst = (T_DST)0)
+	{
+		return sqrt(norm_squared<T_DST>(dst));
+	}
+	constexpr INLINE vec<N,T>& normalize()
+	{
+		const double mag = norm_squared();
+		if(mag != (double)0)
+			(*this) /= sqrt(mag);
+		return (*this);
+	}
+	constexpr INLINE vec<N,T> normalized()
+	{
+		const double mag = norm_squared();
+		if(mag != (double)0)
+			return vec<N,T>{(*this)} /= sqrt(mag);
+		return (*this);
+	}
 };
 
 template<size_t N_A, typename T_A, size_t N_B, typename T_B, typename T_DST = decltype((T_A)1 * (T_B)1 + (T_A)2 * (T_B)2)>
@@ -162,3 +227,19 @@ template<size_t N=1>
 using c8  = vec<N,char>;
 template<size_t N=1>
 using c32 = vec<N,char32_t>;
+
+
+template<size_t N, typename T>
+struct pos : vec<N, T>
+{
+};
+template<size_t N, typename T>
+struct dir : vec<N, T>
+{
+};
+
+template<size_t N, typename T>
+struct col : vec<N, T>
+{
+};
+

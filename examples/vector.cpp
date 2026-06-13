@@ -9,6 +9,8 @@ int main(int argc, char** argv)
 	printf("[%+e %+e %+e]\n",c[0],c[1],c[2]);
 	f64<3> d = 0;
 	d +=3 * (a+ b/c) / 3;
-	printf("[%+e %+e %+e]\n",d[0],d[1],d[2]);
+	printf("[%+e %+e %+e]: %+e\n",d[0],d[1],d[2],d.norm());
+	d.normalize();
+	printf("[%+e %+e %+e]: %+e\n",d[0],d[1],d[2],d.norm());
 	exit(EXIT_SUCCESS);
 }

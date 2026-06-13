@@ -31,6 +31,10 @@ mlr implements aligned array based `vec<N,T>` type for N-dimensional linear alge
 
 **operations**
 - [x] dot
+- [x] norm
+- [x] norm_squared
+- [x] normalize
+- [x] normalized
 - [x] cross3
 - [x] perm
 - [ ] det

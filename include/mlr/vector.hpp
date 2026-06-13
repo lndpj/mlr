@@ -22,7 +22,7 @@ template<typename T>
 struct ops
 {
 	template<typename T_RHS>
-	INLINE T& operator=(const T_RHS& rhs) requires(rhs.size() > 0)
+	INLINE T& operator=(const T_RHS& rhs) requires(!scalar<T>)
 	{
 		T& dst = (*reinterpret_cast<T*>(this));
 		#pragma omp simd
@@ -122,20 +122,26 @@ struct ops
 	friend constexpr INLINE T operator/(const T_LHS& lhs, const T& rhs) { return (T{lhs} /= rhs); }
 };
 
+#pragma pack(push,1)
 template<size_t N, typename T, size_t N_POW2 = std::bit_ceil<size_t>(N)>
 struct alignas((N == N_POW2 ? N : 1) * alignof(T)) vec : std::array<T,N>, ops<vec<N,T>>
 {
+
 	template<scalar... S>
 	constexpr INLINE vec(const S... args) requires(sizeof...(S) > 1) : std::array<T,N>{ static_cast<T>(args)... } 
 	{
 	}
-
-	INLINE vec(const T& src)
+	INLINE vec(const std::array<T,N>& src) : std::array<T,N>{src}
+	{
+	}
+	template<scalar T_O>
+	INLINE vec(const T_O& src)
 	{
 		#pragma omp simd
 		for(size_t i = 0; i < N; i++)
 			(*this)[i] = src;
 	}
+
 	template<size_t N_O, typename T_O>
 	INLINE vec(const vec<N_O,T_O>& src) 
 	{
@@ -144,7 +150,7 @@ struct alignas((N == N_POW2 ? N : 1) * alignof(T)) vec : std::array<T,N>, ops<ve
 			(*this)[i] = src[i];
 	}
 	template<typename... I>
-	constexpr INLINE vec<sizeof...(I),T> perm(const I... args) const { return vec<sizeof...(I),T>{ (*this)[args % N]... }; }
+	constexpr INLINE vec<sizeof...(I),T> perm(const I... args) const { return std::array<T,sizeof...(I)>{ (*this)[args % N]... }; }
 
 	template<typename T_DST = double>
 	INLINE T_DST norm_squared(T_DST dst = (T_DST)0)
@@ -174,7 +180,12 @@ struct alignas((N == N_POW2 ? N : 1) * alignof(T)) vec : std::array<T,N>, ops<ve
 			return vec<N,T>{(*this)} /= sqrt(mag);
 		return (*this);
 	}
+	T& x() requires(N > 0) { return (*this)[0]; }
+	T& y() requires(N > 1) { return (*this)[1]; }
+	T& z() requires(N > 2) { return (*this)[2]; }
+	T& w() requires(N > 3) { return (*this)[3]; }
 };
+#pragma pack(pop)
 
 template<size_t N_A, typename T_A, size_t N_B, typename T_B, typename T_DST = decltype((T_A)1 * (T_B)1 + (T_A)2 * (T_B)2)>
 INLINE T_DST dot(const vec<N_A,T_A>& a, vec<N_B,T_B>& b, size_t N = std::min(N_A,N_B), double seed = (double)0)
@@ -238,8 +249,18 @@ struct dir : vec<N, T>
 {
 };
 
-template<size_t N, typename T>
-struct col : vec<N, T>
+template<size_t N, typename T, std::array C = { 0, 1, 2, 3 }>
+struct col : vec<N,T>
 {
+
+	template<scalar... S>
+	constexpr INLINE col(const S... args) requires(sizeof...(S) > 1) : vec<N,T>{ static_cast<T>(args)... } 
+	{
+	}
+
+	T& r() requires(N > 0) { return (*this)[C[0]]; }
+	T& g() requires(N > 1) { return (*this)[C[1]]; }
+	T& b() requires(N > 2) { return (*this)[C[2]]; }
+	T& a() requires(N > 3) { return (*this)[C[3]]; }
 };
 

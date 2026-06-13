@@ -14,5 +14,9 @@ int main(int argc, char** argv)
 	printf("[%+e %+e %+e]: %+e\n",d[0],d[1],d[2],d.norm());
 	col<4,uint8_t> color = { 23, 24, 25, 35 };
 	printf("[%hhu %hhu %hhu %hhu]: %+f\n", color.r(),color.g(),color.b(), color.a(),color.norm());
+	f64<4> e = b.position();
+	printf("[%+e %+e %+e %+e]: %+f\n", e.x(),e.y(),e.z(),e.w(),color.norm());
+	e = b.direction();
+	printf("[%+e %+e %+e %+e]: %+f\n", e.x(),e.y(),e.z(),e.w(),color.norm());
 	exit(EXIT_SUCCESS);
 }

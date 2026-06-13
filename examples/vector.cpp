@@ -13,6 +13,6 @@ int main(int argc, char** argv)
 	d.normalize();
 	printf("[%+e %+e %+e]: %+e\n",d[0],d[1],d[2],d.norm());
 	col<4,uint8_t> color = { 23, 24, 25, 35 };
-	printf("%hhu %hhu %hhu]: %+f\n", color.r(),color.g(),color.b(),color.norm());
+	printf("[%hhu %hhu %hhu %hhu]: %+f\n", color.r(),color.g(),color.b(), color.a(),color.norm());
 	exit(EXIT_SUCCESS);
 }

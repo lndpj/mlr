@@ -122,6 +122,11 @@ struct ops
 	friend constexpr INLINE T operator/(const T_LHS& lhs, const T& rhs) { return (T{lhs} /= rhs); }
 };
 
+template<size_t N, typename T>
+struct pos;
+template<size_t N, typename T>
+struct dir;
+
 #pragma pack(push,1)
 template<size_t N, typename T, size_t N_POW2 = std::bit_ceil<size_t>(N)>
 struct alignas((N == N_POW2 ? N : 1) * alignof(T)) vec : std::array<T,N>, ops<vec<N,T>>
@@ -179,6 +184,18 @@ struct alignas((N == N_POW2 ? N : 1) * alignof(T)) vec : std::array<T,N>, ops<ve
 		if(mag != (double)0)
 			return vec<N,T>{(*this)} /= sqrt(mag);
 		return (*this);
+	}
+	constexpr INLINE pos<N,T> position()
+	{
+		pos<N,T> dst{(*this)};
+		dst[N-1] = (T)1;
+		return dst;
+	}
+	constexpr INLINE dir<N,T> direction()
+	{
+		dir<N,T> dst{(*this)};
+		dst[N-1] = (T)1;
+		return dst;
 	}
 	T& x() requires(N > 0) { return (*this)[0]; }
 	T& y() requires(N > 1) { return (*this)[1]; }
@@ -243,10 +260,27 @@ using c32 = vec<N,char32_t>;
 template<size_t N, typename T>
 struct pos : vec<N, T>
 {
+	template<scalar... S>
+	constexpr INLINE pos(const S... args) requires(sizeof...(S) > 1) : vec<N,T>{ static_cast<T>(args)... } 
+	{
+	}
+	T& x() requires(N > 0) { return (*this)[0]; }
+	T& y() requires(N > 1) { return (*this)[1]; }
+	T& z() requires(N > 2) { return (*this)[2]; }
+	T& w() requires(N > 3) { return (*this)[3]; }
+	
 };
 template<size_t N, typename T>
 struct dir : vec<N, T>
 {
+	template<scalar... S>
+	constexpr INLINE dir(const S... args) requires(sizeof...(S) > 1) : vec<N,T>{ static_cast<T>(args)... } 
+	{
+	}
+	T& x() requires(N > 0) { return (*this)[0]; }
+	T& y() requires(N > 1) { return (*this)[1]; }
+	T& z() requires(N > 2) { return (*this)[2]; }
+	T& w() requires(N > 3) { return (*this)[3]; }
 };
 
 template<size_t N, typename T, std::array C = { 0, 1, 2, 3 }>

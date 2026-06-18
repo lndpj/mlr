@@ -18,5 +18,7 @@ int main(int argc, char** argv)
 	printf("[%+e %+e %+e %+e]: %+f\n", e.x(),e.y(),e.z(),e.w(),color.norm());
 	e = b.direction();
 	printf("[%+e %+e %+e %+e]: %+f\n", e.x(),e.y(),e.z(),e.w(),color.norm());
+	f64<4> f = b.sign(1,1,1,-1);
+	printf("[%+e %+e %+e %+e]: %+f\n", f.x(),f.y(),f.z(),f.w(),color.norm());
 	exit(EXIT_SUCCESS);
 }

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <cmath>
+#include <climits>
 #include <array>
 
 #ifdef _MSC_VER
@@ -14,6 +15,9 @@
 #define CONST __attribute__((const))
 #endif
 
+#ifndef SSIZE_MIN
+#define SSIZE_MIN -SSIZE_MAX-1
+#endif
 
 template<typename T>
 concept scalar = std::integral<T> || std::floating_point<T>;
@@ -157,6 +161,49 @@ struct alignas((N == N_POW2 ? N : 1) * alignof(T)) vec : std::array<T,N>, ops<ve
 	template<typename... I>
 	constexpr INLINE vec<sizeof...(I),T> perm(const I... args) const { return std::array<T,sizeof...(I)>{ (*this)[args % N]... }; }
 
+	template<typename... I>
+	INLINE vec<sizeof...(I),T> sign(const I... args)
+	{
+		const size_t N_I = std::min(N,sizeof...(args));
+		const vec<N_I,T> mask = { (args == 0 ? 0 : (args > 0 ? 1 : -1))... };
+
+		#pragma omp simd
+		for(size_t i = 0; i < N_I; i++)
+			(*this)[i] *= mask[i];
+		return (*this);
+	}
+	static INLINE vec<N,T> id(ssize_t i = SSIZE_MAX, bool negative_zero = false)
+	{
+		vec<N,T> dst = {};
+		switch(i)
+		{
+			case SSIZE_MAX:
+			{
+				#pragma omp simd
+				for(size_t j = 0; j < N; j++)
+					dst[i] = 1;
+				break;
+			}
+			case SSIZE_MIN:
+			{
+				#pragma omp simd
+				for(size_t j = 0; j < N; j++)
+					dst[i] = -1;
+				break;
+			}
+			case 0:
+			{
+				dst[0] = negative_zero ? -(T)1 : (T)1;
+				break;
+			}
+			default:
+			{
+				dst[labs(i)] = i < 0 ? -(T)1 : (T)1;
+				break;
+			}
+		};
+		return dst;
+	}
 	template<typename T_DST = double>
 	INLINE T_DST norm_squared(T_DST dst = (T_DST)0)
 	{

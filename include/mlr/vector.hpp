@@ -158,20 +158,16 @@ struct alignas((N == N_POW2 ? N : 1) * alignof(T)) vec : std::array<T,N>, ops<ve
 		for(size_t i = 0; i < std::min(N,src.size()); i++)
 			(*this)[i] = src[i];
 	}
+
+	/* permute vector */
 	template<typename... I>
 	constexpr INLINE vec<sizeof...(I),T> perm(const I... args) const { return std::array<T,sizeof...(I)>{ (*this)[args % N]... }; }
 
-	template<typename... I>
-	INLINE vec<sizeof...(I),T> sign(const I... args)
-	{
-		const size_t N_I = std::min(N,sizeof...(args));
-		const vec<N_I,T> mask = { (args == 0 ? 0 : (args > 0 ? 1 : -1))... };
+	/* sign manipulate vector */
+	template<typename... I, size_t N_I = std::min(N,sizeof...(I))>
+	INLINE vec<N_I,T> sign(const I... args) { return (*this) * vec<N_I,T>{ (args == 0 ? 0 : (args > 0 ? 1 : -1))... }; }
 
-		#pragma omp simd
-		for(size_t i = 0; i < N_I; i++)
-			(*this)[i] *= mask[i];
-		return (*this);
-	}
+	/* get n-th positive/negative identity vector or all ones */
 	static INLINE vec<N,T> id(ssize_t i = SSIZE_MAX, bool negative_zero = false)
 	{
 		vec<N,T> dst = {};
@@ -204,6 +200,9 @@ struct alignas((N == N_POW2 ? N : 1) * alignof(T)) vec : std::array<T,N>, ops<ve
 		};
 		return dst;
 	}
+	/* get neutral element usually all zeros */
+	static INLINE vec<N,T> ne() { return vec<N,T>{}; }
+
 	template<typename T_DST = double>
 	INLINE T_DST norm_squared(T_DST dst = (T_DST)0)
 	{
@@ -213,46 +212,49 @@ struct alignas((N == N_POW2 ? N : 1) * alignof(T)) vec : std::array<T,N>, ops<ve
 		return dst;
 	}
 
+	/* norm of vector */
 	template<typename T_DST = double>
-	constexpr INLINE T_DST norm(T_DST dst = (T_DST)0)
-	{
-		return sqrt(norm_squared<T_DST>(dst));
-	}
+	constexpr INLINE T_DST norm(T_DST dst = (T_DST)0) { return std::sqrt(norm_squared<T_DST>(dst)); }
+
+	/* normalize vector */
+	template<typename T_DST = double>
 	constexpr INLINE vec<N,T>& normalize()
 	{
-		const double mag = norm_squared();
-		if(mag != (double)0)
-			(*this) /= sqrt(mag);
+		const T_DST mag = norm_squared();
+		if(mag != (T_DST)0 && mag != (T_DST)1)
+			(*this) /= std::sqrt(mag);
 		return (*this);
 	}
-	constexpr INLINE vec<N,T> normalized()
+	/* normalized copy of vector */
+	constexpr INLINE vec<N,T> normalized() { return vec<N,T>{(*this)}.normalize(); }
+
+	template<size_t N_DST = N>
+	constexpr INLINE operator dir<N_DST,T>() const
 	{
-		const double mag = norm_squared();
-		if(mag != (double)0)
-			return vec<N,T>{(*this)} /= sqrt(mag);
-		return (*this);
-	}
-	constexpr INLINE pos<N,T> position()
-	{
-		pos<N,T> dst{(*this)};
-		dst[N-1] = (T)1;
+		dir<N_DST,T> dst{(*this)};
+		if(N_DST >= N) dst[N-1] = (T)0;
 		return dst;
 	}
-	constexpr INLINE dir<N,T> direction()
+	template<size_t N_DST = N>
+	constexpr INLINE operator pos<N_DST,T>() const
 	{
-		dir<N,T> dst{(*this)};
-		dst[N-1] = (T)0;
+		pos<N_DST,T> dst{(*this)};
+		if(N_DST >= N) dst[N-1] = (T)1;
 		return dst;
 	}
 	T& x() requires(N > 0) { return (*this)[0]; }
 	T& y() requires(N > 1) { return (*this)[1]; }
 	T& z() requires(N > 2) { return (*this)[2]; }
 	T& w() requires(N > 3) { return (*this)[3]; }
+	const T& x() const requires(N > 0) { return (*this)[0]; }
+	const T& y() const requires(N > 1) { return (*this)[1]; }
+	const T& z() const requires(N > 2) { return (*this)[2]; }
+	const T& w() const requires(N > 3) { return (*this)[3]; }
 };
 #pragma pack(pop)
 
 template<size_t N_A, typename T_A, size_t N_B, typename T_B, typename T_DST = decltype((T_A)1 * (T_B)1 + (T_A)2 * (T_B)2)>
-INLINE T_DST dot(const vec<N_A,T_A>& a, vec<N_B,T_B>& b, size_t N = std::min(N_A,N_B), double seed = (double)0)
+INLINE T_DST dot(const vec<N_A,T_A>& a, const vec<N_B,T_B>& b, size_t N = std::min(N_A,N_B), double seed = (double)0)
 {
 	T_DST dst = (T_DST)seed;
 	#pragma omp simd reduction(+:dst)

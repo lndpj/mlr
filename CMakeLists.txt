@@ -51,6 +51,7 @@ if( NOT MSVC )
 endif()
 
 add_executable( vector examples/vector.cpp )
+add_executable( quat examples/quat.cpp )
 add_library(mlr INTERFACE)
 target_include_directories( mlr INTERFACE
         PUBLIC_HEADER $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

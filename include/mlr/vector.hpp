@@ -177,14 +177,14 @@ struct alignas((N == N_POW2 ? N : 1) * alignof(T)) vec : std::array<T,N>, ops<ve
 			{
 				#pragma omp simd
 				for(size_t j = 0; j < N; j++)
-					dst[i] = 1;
+					dst[j] = (T)1;
 				break;
 			}
 			case SSIZE_MIN:
 			{
 				#pragma omp simd
 				for(size_t j = 0; j < N; j++)
-					dst[i] = -1;
+					dst[j] = (T)-1;
 				break;
 			}
 			case 0:

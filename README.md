@@ -28,7 +28,7 @@ mlr implements aligned array based `vec<N,T>` type for N-dimensional linear alge
 - [ ] `mat<C,R>`
 - [ ] `bivec<N,T>`
 - [ ] `mvec<N,T>`
-- [ ] `quat<T>`
+- [x] `quat<T>`
 - [ ] `versor<T>`
 - [ ] `motor<T>`
 - [ ] `tensor<N,M,T>`
@@ -41,6 +41,9 @@ mlr implements aligned array based `vec<N,T>` type for N-dimensional linear alge
 - [x] normalized
 - [x] cross3
 - [x] perm
+- [x] sign
+- [x] id
+- [x] ne
 - [ ] det
 - [ ] hat
 - [ ] vee

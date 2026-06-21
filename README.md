@@ -72,6 +72,7 @@ int main(int argc, char** argv)
 ```
 ## Links
 
+- [OpenGL/KHR][2]
 - [SYCL Overview][3]
 - [OpenCL][4]
 

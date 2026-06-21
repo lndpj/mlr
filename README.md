@@ -55,6 +55,7 @@ mlr implements aligned array based `vec<N,T>` type for N-dimensional linear alge
 
 - [C++23][1]
 - [OpenGL/KHR][2]
+- [OpenMP][5]
 
 ## Building
 
@@ -84,3 +85,4 @@ int main(int argc, char** argv)
 [2]: https://github.com/KhronosGroup/OpenGL-Registry/blob/main/api/GL/glcorearb.h
 [3]: https://www.khronos.org/sycl/
 [4]: https://www.khronos.org/opencl/
+[5]: https://www.openmp.org/

@@ -1,5 +1,5 @@
 # mlr
-C++ SIMD OpenMP linear algebra math library
+[C++][1] [OpenMP][5] [SIMD][6] linear algebra math library
 
 ## About
 
@@ -51,12 +51,6 @@ mlr implements aligned array based `vec<N,T>` type for N-dimensional linear alge
 - [ ] hodge
 - [ ] laplacian
 
-## Dependencies
-
-- [C++23][1]
-- [OpenGL/KHR][2]
-- [OpenMP][5]
-
 ## Building
 
 ```sh
@@ -86,3 +80,4 @@ int main(int argc, char** argv)
 [3]: https://www.khronos.org/sycl/
 [4]: https://www.khronos.org/opencl/
 [5]: https://www.openmp.org/
+[6]: https://en.wikipedia.org/wiki/Single_instruction,_multiple_data
